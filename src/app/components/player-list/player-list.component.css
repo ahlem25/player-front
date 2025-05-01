@@ -58,6 +58,7 @@
     width: 100%;
     border-collapse: collapse;
     margin-bottom: 20px;
+    margin-top: 20px;
 }
 
 .table th,
@@ -76,7 +77,7 @@
     background-color: #f1f1f1;
 }
 
-.actions {
+.table .actions {
     display: flex;
     gap: 5px;
 }
@@ -104,7 +105,8 @@
     text-align: center;
     background-color: #f8f9fa;
     border-radius: 4px;
-    margin-top: 20px;
+    margin-top: 50px;
+    color: #6c757d;
 }
 
 .empty-state p {
@@ -114,6 +116,119 @@
 
 .empty-state a {
     color: #007bff;
-    text-decoration: underline;
     cursor: pointer;
+    text-decoration: underline;
+}
+
+.search-container {
+    margin: 20px 0;
+}
+
+.search-container .input-group {
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.search-container .input-group-text {
+    background-color: #f8f9fa;
+    border: 1px solid #ced4da;
+    border-right: none;
+}
+
+.search-container .form-control {
+    border-left: none;
+    border: 1px solid #ced4da;
+    padding: 10px 15px;
+    font-size: 16px;
+}
+
+.search-container .btn-outline-secondary {
+    border: 1px solid #ced4da;
+    border-left: none;
+    background-color: #fff;
+}
+
+.search-container .btn-outline-secondary:hover {
+    background-color: #f8f9fa;
+}
+
+.search-hint {
+    margin-top: 5px;
+    color: #6c757d;
+}
+
+.pagination-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 25px 0;
+}
+
+.pagination-info {
+    color: #6c757d;
+    margin-bottom: 15px;
+    font-size: 14px;
+}
+
+.pagination {
+    display: flex;
+    padding-left: 0;
+    list-style: none;
+}
+
+.page-item {
+    margin: 0 2px;
+}
+
+.page-link {
+    position: relative;
+    display: block;
+    padding: 0.5rem 0.75rem;
+    color: #007bff;
+    background-color: #fff;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;
+}
+
+.page-link:hover {
+    color: #0056b3;
+    background-color: #e9ecef;
+    border-color: #dee2e6;
+}
+
+.page-item.active .page-link {
+    z-index: 3;
+    color: #fff;
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.page-item.disabled .page-link {
+    color: #6c757d;
+    pointer-events: none;
+    background-color: #fff;
+    border-color: #dee2e6;
+}
+
+@media (max-width: 768px) {
+    .header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .actions {
+        margin-top: 10px;
+    }
+
+    .pagination-container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .pagination {
+        margin-bottom: 10px;
+    }
 }

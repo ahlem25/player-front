@@ -4,17 +4,17 @@
         <button class="btn btn-secondary" (click)="goBack()">Retour</button>
     </div>
 
-    <div class="alert alert-info">
+    <div class="alert alert-info" *ngIf="!importResults">
         <h4>Instructions d'importation :</h4>
         <p>Importez des joueurs à partir d'un fichier XLSX. Le fichier doit contenir <strong>exactement</strong> les
             colonnes suivantes :</p>
         <ul>
-            <li><strong>firstName</strong>: Prénom du joueur (obligatoire)</li>
-            <li><strong>lastName</strong>: Nom du joueur (obligatoire)</li>
-            <li><strong>position</strong>: Position du joueur, doit être exactement l'une des suivantes : Attaquant,
+            <li><strong>Prénom</strong>: Prénom du joueur (obligatoire)</li>
+            <li><strong>Nom</strong>: Nom du joueur (obligatoire)</li>
+            <li><strong>Position</strong>: Position du joueur, doit être l'une des suivantes : Attaquant,
                 Défenseur, Gardien, Milieu (obligatoire)</li>
-            <li><strong>team</strong>: Équipe du joueur (obligatoire)</li>
-            <li><strong>age</strong>: Âge du joueur, doit être un nombre entre 16 et 50 (obligatoire)</li>
+            <li><strong>Équipe</strong>: Équipe du joueur (obligatoire)</li>
+            <li><strong>Âge</strong>: Âge du joueur, doit être un nombre positif (obligatoire)</li>
         </ul>
         <p>Assurez-vous que toutes les cellules contiennent des données valides. Les lignes avec des données manquantes
             ou invalides seront rejetées.</p>
@@ -22,28 +22,82 @@
         <div class="example-file">
             <p><strong>Important :</strong> En cas d'erreur lors de l'importation, veuillez vérifier que :</p>
             <ol>
-                <li>Toutes les colonnes requises sont présentes avec l'orthographe exacte (firstName, lastName,
-                    position, team, age)</li>
+                <li>Toutes les colonnes requises sont présentes</li>
                 <li>Aucune cellule n'est vide (toutes les données sont obligatoires)</li>
                 <li>La position est exactement l'une des valeurs attendues (Attaquant, Défenseur, Gardien, Milieu)</li>
-                <li>L'âge est un nombre entier entre 16 et 50</li>
+                <li>L'âge est un nombre entier positif</li>
             </ol>
         </div>
     </div>
-
-
 
     <div class="alert alert-danger" *ngIf="errorMessage">
         <h4>Erreur d'importation :</h4>
         <p>{{ errorMessage }}</p>
     </div>
 
-    <div class="alert alert-success" *ngIf="successMessage">
-        <h4>Succès :</h4>
-        <p>{{ successMessage }}</p>
+    <div class="import-results" *ngIf="importResults">
+        <div class="alert alert-success">
+            <h4>Résultats de l'importation :</h4>
+            <p>{{ successMessage }}</p>
+            <div class="stats">
+                <div class="stat-item">
+                    <span class="stat-label">Lignes analysées :</span>
+                    <span class="stat-value">{{ importResults.totalRows }}</span>
+                </div>
+                <div class="stat-item success">
+                    <span class="stat-label">Joueurs valides :</span>
+                    <span class="stat-value">{{ importResults.importedCount }}</span>
+                </div>
+                <div class="stat-item error">
+                    <span class="stat-label">Joueurs rejetés :</span>
+                    <span class="stat-value">{{ importResults.notImportedCount }}</span>
+                </div>
+            </div>
+            <div class="action-buttons">
+                <button class="btn btn-primary" (click)="goToPlayerList()">Voir la liste des joueurs</button>
+                <button class="btn btn-secondary" (click)="clearSelectedFile()">Importer un autre fichier</button>
+            </div>
+        </div>
+
+        <div class="validation-errors" *ngIf="notImportedPlayers && notImportedPlayers.length > 0">
+            <h4>Lignes rejetées :</h4>
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Ligne</th>
+                            <th *ngFor="let col of columns">{{ col }}</th>
+                            <th>Erreur</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let error of notImportedPlayers">
+                            <td>{{ error.row }}</td>
+                            <td *ngFor="let value of error.data">
+                                <span [class.empty-cell]="!value">{{ value || '(vide)' }}</span>
+                            </td>
+                            <td class="error-message">{{ error.error }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 
-    <div class="import-form">
+    <div class="import-form" *ngIf="!importResults">
+        <div class="options">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="persistCheck" [(ngModel)]="shouldPersist"
+                    (change)="togglePersist()">
+                <label class="form-check-label" for="persistCheck">
+                    Enregistrer dans la base de données
+                </label>
+                <small class="form-text text-muted">
+                    Si non coché, le fichier sera seulement validé sans enregistrement.
+                </small>
+            </div>
+        </div>
+
         <div class="file-upload-container">
             <label for="fileInput" class="file-label">
                 <div class="upload-icon">
@@ -60,7 +114,7 @@
 
         <button class="btn btn-primary import-btn" [disabled]="!selectedFile || isUploading" (click)="importPlayers()">
             <span *ngIf="isUploading">Importation en cours...</span>
-            <span *ngIf="!isUploading">Importer</span>
+            <span *ngIf="!isUploading">{{ shouldPersist ? 'Importer' : 'Valider' }}</span>
         </button>
     </div>
 </div>

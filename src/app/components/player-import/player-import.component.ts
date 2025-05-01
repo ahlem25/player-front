@@ -2,6 +2,12 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { PlayerService } from '../../services/player.service';
 
+interface ImportError {
+  row: number;
+  data: any[];
+  error: string;
+}
+
 @Component({
   selector: 'app-player-import',
   templateUrl: './player-import.component.html',
@@ -14,6 +20,12 @@ export class PlayerImportComponent {
   errorMessage = '';
   successMessage = '';
 
+  importResults: any = null;
+  shouldPersist = false;
+  notImportedPlayers: ImportError[] = [];
+
+  columns = ['Prénom', 'Nom', 'Position', 'Équipe', 'Âge'];
+
   constructor(
     private playerService: PlayerService,
     private router: Router
@@ -25,11 +37,19 @@ export class PlayerImportComponent {
       this.selectedFile = input.files[0];
       this.errorMessage = '';
       this.successMessage = '';
+      this.importResults = null;
+      this.notImportedPlayers = [];
     }
   }
 
   clearSelectedFile(): void {
     this.selectedFile = null;
+    this.importResults = null;
+    this.notImportedPlayers = [];
+  }
+
+  togglePersist(): void {
+    this.shouldPersist = !this.shouldPersist;
   }
 
   importPlayers(): void {
@@ -47,17 +67,33 @@ export class PlayerImportComponent {
     this.isUploading = true;
     this.errorMessage = '';
     this.successMessage = '';
+    this.importResults = null;
+    this.notImportedPlayers = [];
 
-    console.log('Démarrage de l\'importation du fichier:', this.selectedFile.name);
 
-    this.playerService.importPlayers(this.selectedFile).subscribe({
+    this.playerService.importPlayers(this.selectedFile, this.shouldPersist).subscribe({
       next: (response) => {
         console.log('Réponse d\'importation:', response);
         this.isUploading = false;
-        this.successMessage = response && response.count
-          ? `${response.count} joueur(s) ont été importés avec succès`
-          : 'Les joueurs ont été importés avec succès';
-        this.selectedFile = null;
+
+        if (response && response.success) {
+          this.importResults = {
+            importedCount: response.importedCount || 0,
+            notImportedCount: response.notImportedCount || 0,
+            totalRows: response.totalRows || 0
+          };
+
+          this.successMessage = response.message ||
+            (this.shouldPersist ?
+              `${response.importedCount} joueur(s) ont été importés avec succès` :
+              `${response.importedCount} joueur(s) ont été validés avec succès`);
+
+          if (response.notImportedPlayers && response.notImportedPlayers.length > 0) {
+            this.notImportedPlayers = response.notImportedPlayers;
+          }
+        } else {
+          this.errorMessage = response.message || 'Une erreur inconnue est survenue lors de l\'importation';
+        }
       },
       error: (error) => {
         console.error('Erreur d\'importation détaillée:', error);
@@ -71,12 +107,16 @@ export class PlayerImportComponent {
           this.errorMessage = 'Une erreur est survenue lors de l\'importation des joueurs. Vérifiez le format de votre fichier XLSX.';
         }
 
-        this.errorMessage += ' Assurez-vous que votre fichier contient toutes les colonnes requises (firstName, lastName, position, team, age) et que les valeurs sont valides.';
+        this.errorMessage += ' Assurez-vous que votre fichier contient les colonnes requises (Prénom, Nom, Position, Équipe, Âge) et que les valeurs sont valides.';
       }
     });
   }
 
   goBack(): void {
+    this.router.navigate(['/players']);
+  }
+
+  goToPlayerList(): void {
     this.router.navigate(['/players']);
   }
 }

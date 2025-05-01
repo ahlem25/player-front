@@ -7,6 +7,23 @@
         </div>
     </div>
 
+    <div class="search-container mb-3">
+        <div class="input-group">
+            <div class="input-group-text">
+                <i class="fa fa-search"></i>
+            </div>
+            <input type="text" class="form-control" placeholder="Rechercher par nom, prénom, position ou équipe..."
+                (input)="onSearch($event)" [value]="searchTerm">
+            <button *ngIf="searchTerm" class="btn btn-outline-secondary" type="button" (click)="clearSearch()">
+                <i class="fa fa-times"></i>
+            </button>
+        </div>
+        <div class="search-hint" *ngIf="searchTerm">
+            <small>Recherche en cours pour: <strong>{{ searchTerm }}</strong>
+                ({{ filteredPlayers.length }} résultats trouvés)</small>
+        </div>
+    </div>
+
     <div class="alert alert-info" *ngIf="isLoading">
         Chargement des joueurs...
     </div>
@@ -15,7 +32,7 @@
         {{ errorMessage }}
     </div>
 
-    <div class="table-responsive" *ngIf="!isLoading && players && players.length > 0">
+    <div class="table-responsive" *ngIf="!isLoading && displayedPlayers && displayedPlayers.length > 0">
         <table class="table">
             <thead>
                 <tr>
@@ -28,7 +45,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let player of players">
+                <tr *ngFor="let player of displayedPlayers">
                     <td>{{ player.firstName }}</td>
                     <td>{{ player.lastName }}</td>
                     <td>{{ player.position }}</td>
@@ -45,10 +62,62 @@
                 </tr>
             </tbody>
         </table>
+
+        <div class="pagination-container" *ngIf="filteredPlayers.length > 0">
+            <div class="pagination-info">
+                Page {{ currentPage }} sur {{ totalPages > 0 ? totalPages : 1 }}
+                ({{ totalItems }} joueur<span *ngIf="totalItems > 1">s</span> au total)
+            </div>
+            <nav aria-label="Navigation de la pagination" *ngIf="totalPages > 1">
+                <ul class="pagination">
+                    <li class="page-item" [class.disabled]="currentPage === 1">
+                        <a class="page-link" href="javascript:void(0)" (click)="prevPage()">«</a>
+                    </li>
+
+                    <li class="page-item" [class.active]="currentPage === 1" *ngIf="totalPages > 3">
+                        <a class="page-link" href="javascript:void(0)" (click)="changePage(1)">1</a>
+                    </li>
+
+                    <li class="page-item disabled" *ngIf="currentPage > 3">
+                        <a class="page-link">...</a>
+                    </li>
+
+                    <li class="page-item" *ngIf="currentPage > 1">
+                        <a class="page-link" href="javascript:void(0)" (click)="changePage(currentPage - 1)">{{
+                            currentPage - 1 }}</a>
+                    </li>
+
+                    <li class="page-item active">
+                        <a class="page-link" href="javascript:void(0)">{{ currentPage }}</a>
+                    </li>
+
+                    <li class="page-item" *ngIf="currentPage < totalPages">
+                        <a class="page-link" href="javascript:void(0)" (click)="changePage(currentPage + 1)">{{
+                            currentPage + 1 }}</a>
+                    </li>
+
+                    <li class="page-item disabled" *ngIf="currentPage < totalPages - 2">
+                        <a class="page-link">...</a>
+                    </li>
+                    <li class="page-item" [class.active]="currentPage === totalPages"
+                        *ngIf="totalPages > 3 && currentPage !== totalPages">
+                        <a class="page-link" href="javascript:void(0)" (click)="changePage(totalPages)">{{ totalPages
+                            }}</a>
+                    </li>
+
+                    <li class="page-item" [class.disabled]="currentPage === totalPages">
+                        <a class="page-link" href="javascript:void(0)" (click)="nextPage()">»</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
     </div>
 
-    <div class="empty-state" *ngIf="!isLoading && (!players || players.length === 0)">
-        <p>Aucun joueur trouvé. Voulez-vous <a (click)="goToAddPlayer()">ajouter un joueur</a> ou <a
+    <div class="empty-state" *ngIf="!isLoading && (!filteredPlayers || filteredPlayers.length === 0)">
+        <p *ngIf="searchTerm">Aucun joueur trouvé pour la recherche : "{{ searchTerm }}".
+            <a href="javascript:void(0)" (click)="clearSearch()">Effacer la recherche</a>
+        </p>
+        <p *ngIf="!searchTerm">Aucun joueur trouvé. Voulez-vous <a (click)="goToAddPlayer()">ajouter un joueur</a> ou <a
                 (click)="goToImportPlayers()">importer des joueurs</a>?</p>
     </div>
 </div>
