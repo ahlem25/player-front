@@ -1,0 +1,33 @@
+<div class="login-container">
+    <h2>Connexion</h2>
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+            <label for="username">Email</label>
+            <input type="email" id="username" formControlName="username" class="form-control"
+                placeholder="Entrez votre email">
+            <div class="error-message" *ngIf="f['username'].touched && f['username'].errors">
+                <span *ngIf="f['username'].errors['required']">L'email est obligatoire</span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="password">Mot de passe</label>
+            <input type="password" id="password" formControlName="password" class="form-control"
+                placeholder="Entrez votre mot de passe">
+            <div class="error-message" *ngIf="f['password'].touched && f['password'].errors">
+                <span *ngIf="f['password'].errors['required']">Le mot de passe est obligatoire</span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary" [disabled]="loginForm.invalid || isLoading">
+                <span *ngIf="isLoading">Connexion en cours...</span>
+                <span *ngIf="!isLoading">Se connecter</span>
+            </button>
+        </div>
+
+        <div class="alert alert-danger" *ngIf="errorMessage">
+            {{ errorMessage }}
+        </div>
+    </form>
+</div>

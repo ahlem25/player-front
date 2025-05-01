@@ -1,0 +1,54 @@
+<div class="container">
+    <div class="header">
+        <h2>Liste des joueurs</h2>
+        <div class="actions">
+            <button class="btn btn-primary" (click)="goToAddPlayer()">Ajouter un joueur</button>
+            <button class="btn btn-secondary" (click)="goToImportPlayers()">Importer des joueurs</button>
+        </div>
+    </div>
+
+    <div class="alert alert-info" *ngIf="isLoading">
+        Chargement des joueurs...
+    </div>
+
+    <div class="alert alert-danger" *ngIf="errorMessage">
+        {{ errorMessage }}
+    </div>
+
+    <div class="table-responsive" *ngIf="!isLoading && players && players.length > 0">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Prénom</th>
+                    <th>Nom</th>
+                    <th>Position</th>
+                    <th>Équipe</th>
+                    <th>Âge</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let player of players">
+                    <td>{{ player.firstName }}</td>
+                    <td>{{ player.lastName }}</td>
+                    <td>{{ player.position }}</td>
+                    <td>{{ player.team }}</td>
+                    <td>{{ player.age }}</td>
+                    <td class="actions">
+                        <button class="btn btn-sm btn-info" (click)="viewPlayer(player.id!)"
+                            *ngIf="player.id">Voir</button>
+                        <button class="btn btn-sm btn-warning" (click)="editPlayer(player.id!)"
+                            *ngIf="player.id">Modifier</button>
+                        <button class="btn btn-sm btn-danger" (click)="deletePlayer(player.id!)"
+                            *ngIf="player.id">Supprimer</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="empty-state" *ngIf="!isLoading && (!players || players.length === 0)">
+        <p>Aucun joueur trouvé. Voulez-vous <a (click)="goToAddPlayer()">ajouter un joueur</a> ou <a
+                (click)="goToImportPlayers()">importer des joueurs</a>?</p>
+    </div>
+</div>
