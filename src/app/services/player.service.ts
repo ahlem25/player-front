@@ -15,18 +15,13 @@ interface ApiPlatformResponse {
 })
 export class PlayerService {
   private apiUrl = `${environment.apiUrl}/api/players`;
-  private httpOptions = {
-    headers: new HttpHeaders({
-      'Content-Type': 'application/ld+json',
-      'Accept': 'application/ld+json, application/json'
-    })
-  };
+
 
   constructor(private http: HttpClient) { }
 
   getAllPlayers(): Observable<Player[]> {
-    console.log('Getting all players with options:', this.httpOptions);
-    return this.http.get<any>(this.apiUrl, this.httpOptions).pipe(
+   
+    return this.http.get<any>(this.apiUrl).pipe(
       map(response => {
         console.log('API Response:', response);
 
@@ -60,34 +55,26 @@ export class PlayerService {
   }
 
   getPlayer(id: number): Observable<Player> {
-    return this.http.get<Player>(`${this.apiUrl}/${id}`, this.httpOptions);
+    return this.http.get<Player>(`${this.apiUrl}/${id}`);
   }
 
   createPlayer(player: Player): Observable<Player> {
-    return this.http.post<Player>(this.apiUrl, player, this.httpOptions);
+    return this.http.post<Player>(this.apiUrl, player);
   }
 
   updatePlayer(id: number, player: Player): Observable<Player> {
-    return this.http.put<Player>(`${this.apiUrl}/${id}`, player, this.httpOptions);
+    return this.http.put<Player>(`${this.apiUrl}/${id}`, player);
   }
 
   deletePlayer(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`, this.httpOptions);
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 
   importPlayers(file: File): Observable<any> {
     const formData = new FormData();
     formData.append('file', file);
 
-    console.log('Uploading file:', file.name, 'size:', file.size, 'type:', file.type);
-
-    const uploadOptions = {
-      headers: new HttpHeaders({
-        'Accept': 'application/json, application/ld+json'
-      })
-    };
-
-    return this.http.post<any>(`${environment.apiUrl}/api/players/import`, formData, uploadOptions)
+    return this.http.post<any>(`${environment.apiUrl}/api/players/import`, formData)
       .pipe(
         catchError((error: HttpErrorResponse) => {
           console.error('Import error details:', error);

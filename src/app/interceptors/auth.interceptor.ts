@@ -31,10 +31,28 @@ export class AuthInterceptor implements HttpInterceptor {
 
     if (token) {
       console.log('Adding token to request:', request.url);
-      const cloned = request.clone({
-        headers: request.headers.set('Authorization', `Bearer ${token}`),
+      let cloned;
+      if(request.url.includes('/api/players/import')){
+        cloned = request.clone({   
+          setHeaders: {
+            Authorization: `Bearer ${token}`,
+            'Accept': 'application/json, application/ld+json'
 
-      });
+          },
+  
+        });
+      }else{
+        cloned = request.clone({   
+          setHeaders: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/ld+json',
+            'Accept': 'application/ld+json, application/json',
+          },
+  
+        });
+      }
+ 
+
       return next.handle(cloned).pipe(
         catchError((error: HttpErrorResponse) => {
           console.error('HTTP Error in interceptor:', error);
