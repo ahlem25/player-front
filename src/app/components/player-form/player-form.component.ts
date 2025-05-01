@@ -83,12 +83,10 @@ export class PlayerFormComponent implements OnInit {
       player.age = parseInt(player.age, 10);
     }
 
-    console.log('Sending player data:', player);
 
     if (this.isEditMode && this.playerId) {
       this.playerService.updatePlayer(this.playerId, player).subscribe({
         next: (response) => {
-          console.log('Update successful:', response);
           this.router.navigate(['/players']);
         },
         error: (error) => {
@@ -100,7 +98,6 @@ export class PlayerFormComponent implements OnInit {
     } else {
       this.playerService.createPlayer(player).subscribe({
         next: (response) => {
-          console.log('Creation successful:', response);
           this.router.navigate(['/players']);
         },
         error: (error) => {

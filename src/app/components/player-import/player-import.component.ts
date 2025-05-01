@@ -66,12 +66,9 @@ export class PlayerImportComponent {
     this.importResults = null;
     this.notImportedPlayers = [];
 
-    console.log('Début importation, persistInDatabase =', this.shouldPersist);
-
 
     this.playerService.importPlayers(this.selectedFile, this.shouldPersist).subscribe({
       next: (response) => {
-        console.log('Réponse d\'importation:', response);
         this.isUploading = false;
 
         if (response && response.success) {

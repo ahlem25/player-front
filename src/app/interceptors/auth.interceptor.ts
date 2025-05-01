@@ -21,8 +21,6 @@ export class AuthInterceptor implements HttpInterceptor {
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     const token = this.authService.getToken();
-    console.log('Token intercepted:', token ? 'present' : 'absent');
-
 
     if (request.url.includes('/api/login_check')) {
       return next.handle(request);
@@ -30,7 +28,6 @@ export class AuthInterceptor implements HttpInterceptor {
 
 
     if (token) {
-      console.log('Adding token to request:', request.url);
       let cloned;
       if(request.url.includes('/api/players/import')){
         cloned = request.clone({   
@@ -58,7 +55,6 @@ export class AuthInterceptor implements HttpInterceptor {
           console.error('HTTP Error in interceptor:', error);
 
           if (error.status === 401) {
-            console.log('Unauthorized request, redirecting to login');
             this.authService.logout();
             this.router.navigate(['/login']);
           }
@@ -69,7 +65,6 @@ export class AuthInterceptor implements HttpInterceptor {
     }
 
     if (request.url.includes('/api/') && !request.url.includes('/api/login_check')) {
-      console.log('No token for API request, redirecting to login');
       this.router.navigate(['/login']);
     }
 

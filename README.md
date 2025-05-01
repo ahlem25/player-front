@@ -57,3 +57,43 @@ Angular CLI does not come with an end-to-end testing framework by default. You c
 ## Additional Resources
 
 For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+
+## Fonctionnalités
+
+Cette application Angular permet de gérer une base de données de joueurs de football.
+
+### Connexion
+
+![Écran de connexion](./screenshots/login.png)
+
+### Accueil
+
+![Page d'accueil](./screenshots/home.png)
+
+### Liste des joueurs
+
+![Liste des joueurs](./screenshots/liste.png)
+
+### Recherche de joueurs
+
+![Recherche](./screenshots/search.png)
+
+### Consultation d'un joueur
+
+![Détails du joueur](./screenshots/view.png)
+
+### Ajout d'un joueur
+
+![Formulaire d'ajout](./screenshots/add.png)
+
+### Modification d'un joueur
+
+![Formulaire de mise à jour](./screenshots/update.png)
+
+### Importation de joueurs
+
+![Importation](./screenshots/import.png)
+
+### Validation de l'importation
+
+![Validation des données importées](./screenshots/validation-import.png)

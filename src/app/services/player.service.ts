@@ -15,7 +15,6 @@ export class PlayerService {
   getAllPlayers(): Observable<Player[]> {
     return this.http.get<any>(this.apiUrl).pipe(
       map(response => {
-        console.log('API Response:', response);
 
         if (Array.isArray(response)) {
           return response;
@@ -68,7 +67,6 @@ export class PlayerService {
     const url = `${environment.apiUrl}/api/players/import`;
     const params = persistInDatabase ? '?persistInDatabase=true' : '';
 
-    console.log('Import URL:', url + params, 'Persist in DB:', persistInDatabase);
 
     return this.http.post<any>(
       url + params,
