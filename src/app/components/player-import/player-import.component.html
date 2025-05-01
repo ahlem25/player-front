@@ -87,8 +87,7 @@
     <div class="import-form" *ngIf="!importResults">
         <div class="options">
             <div class="form-check">
-                <input class="form-check-input" type="checkbox" id="persistCheck" [(ngModel)]="shouldPersist"
-                    (change)="togglePersist()">
+                <input class="form-check-input" type="checkbox" id="persistCheck" [(ngModel)]="shouldPersist">
                 <label class="form-check-label" for="persistCheck">
                     Enregistrer dans la base de données
                 </label>

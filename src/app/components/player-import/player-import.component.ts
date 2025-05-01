@@ -48,10 +48,6 @@ export class PlayerImportComponent {
     this.notImportedPlayers = [];
   }
 
-  togglePersist(): void {
-    this.shouldPersist = !this.shouldPersist;
-  }
-
   importPlayers(): void {
     if (!this.selectedFile) {
       this.errorMessage = 'Veuillez sélectionner un fichier XLSX';
@@ -69,6 +65,8 @@ export class PlayerImportComponent {
     this.successMessage = '';
     this.importResults = null;
     this.notImportedPlayers = [];
+
+    console.log('Début importation, persistInDatabase =', this.shouldPersist);
 
 
     this.playerService.importPlayers(this.selectedFile, this.shouldPersist).subscribe({

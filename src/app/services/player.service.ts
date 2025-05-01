@@ -65,8 +65,13 @@ export class PlayerService {
     const formData = new FormData();
     formData.append('file', file);
 
+    const url = `${environment.apiUrl}/api/players/import`;
+    const params = persistInDatabase ? '?persistInDatabase=true' : '';
+
+    console.log('Import URL:', url + params, 'Persist in DB:', persistInDatabase);
+
     return this.http.post<any>(
-      `${environment.apiUrl}/api/players/import${persistInDatabase ? '?persistInDatabase=true' : ''}`,
+      url + params,
       formData
     ).pipe(
       catchError((error: HttpErrorResponse) => {
